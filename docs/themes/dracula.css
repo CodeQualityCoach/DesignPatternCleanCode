@@ -159,6 +159,7 @@ h5 {
 h6 {
   font-size: 1em;
   margin-top: 5em;
+  text-align: right;
 }
 
 p,
@@ -320,7 +321,7 @@ header {
 
 footer {
   left: 0;
-  right: 0;
+  right: 3em;
   bottom: 0;
   text-align: right;
 }
