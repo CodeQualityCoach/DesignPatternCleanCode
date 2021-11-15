@@ -29,3 +29,11 @@ Hiermit können alle Slides erzeigt werden. Output ist entsprechend der `build` 
 `.marprc.yml` enthält die Konfiguration für Theme, Output etc.
 
 Die Slides befinden sich `Slides`
+
+# Die Folien
+
+* `rf` => Refactoring Pattern
+* `cc` => Clean Code Principle
+* `dp` => Design Pattern
+* `bp` => Best Practice
+
