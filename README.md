@@ -18,7 +18,11 @@ Am Ende des Tages haben wir einen allround Werkzeugkoffer, mit dem wir für die 
 
 # Marp'en der Folien
 
+Öffnet ein Port und erstellt die Folien on-demand bzw. bei Änderung.
+
     marp -p -s --input-dir .\slides\
+
+Hiermit können alle Slides erzeigt werden. Output ist entsprechend der `build` Ordner.
 
     marp --input-dir .\slides\
 
