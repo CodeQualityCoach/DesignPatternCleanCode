@@ -9,77 +9,70 @@ size: 4K
 
 <!-- _footer: "" -->
 <!-- _paginate: "" -->
-# Design Pattern & Clean Code...
+# Design Pattern & Clean Code
 
-## ... ein pragmatischer Ansatz
+## Zero Impact Injection
 
 ###### Thomas Ley | @CleanCodeCoach
----
 
+---
 <!-- _footer: "" -->
 <!-- _paginate: "" -->
-## Outline
+# Goals
 
-- Light Theme
-- Bullet Points
-- Tables
-- Images
-- Code
-- References
+* Refactor Brownfield Project
+* Single Responsibility Principle
+* Interface Segregation Principle
+* Dependency Injection
+* Zero Impact Injection
+* Testable Code.
 
----
-
-## Bullet Points
-
-- Show all
-- at once
-* or one
-* by one
 
 ---
+<!-- _footer: "" -->
+<!-- _paginate: "" -->
+# Steps
 
-## Tables
-
-| Header | Header |
-| ------ | ------ |
-| Text   | Text   |
-
----
-
-## Images
-
-![](../assets/evolution_of_cleancode.jfif)
+* Extract Code (Method :arrow_right: Class :arrow_right: Project)
+* Create Single Dependency (`new()`)
+* Inject Dependency 
+* Null-Object Pattern.
 
 ---
+# Extract code [SRP]
 
-## Background Images
+- Extract method
+- Move to class
+- Introduce field
 
-- Full Size
-
-![bg right](../assets/evolution_of_cleancode.jfif)
-
----
-
-## Background Images Customized
-
-- 60% slide width
-- 80% image size
-
-![bg right:60% 80%](../assets/evolution_of_cleancode.jfif)
+:bulb: Namespace indicates dependencies
+:bulb: Create a documentation of the class without "and"
+:vs: __Demo: Barcode Code__
 
 ---
+# [Zero Impact Injection]
 
-## Code
+- Add interface to class
+- Inject as interface into class
+- Use `??` for default implementation
 
-```csharp
-// Hello World! program
-namespace HelloWorld
-{
-    class Hello {         
-        static void Main(string[] args)
-        {
-            System.Console.WriteLine("Hello World!");
-        }
-    }
-}
-```
+:vs: __Demo: Barcode class__
+
+---
+# [Null-Object Pattern]
+
+- Reduces null-checks
+- "Identity Element" for an interface
+- Empty implementation
+- Returns `default`
+- IFooBar --> EmptyFooBar
+- Implemented along with Interface
+
+:vs: __Demo: Empty barcode class__
+
+---
+# Have a break...
+
+# ... have a workout
+
+[7 Minute Workout](https://www.youtube.com/watch?v=mmq5zZfmIws) or [Bring Sally Up](https://www.youtube.com/watch?v=41N6bKO-NVI)

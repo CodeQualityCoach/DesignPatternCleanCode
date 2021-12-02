@@ -80,3 +80,10 @@ size: 4K
 * Legacy Clean Code principle
 * Multi-Inheritance (C++)
 * A class using inheriance to "get functions".
+
+---
+# Have a break...
+
+# ... have a workout
+
+[7 Minute Workout](https://www.youtube.com/watch?v=mmq5zZfmIws) or [Bring Sally Up](https://www.youtube.com/watch?v=41N6bKO-NVI)
