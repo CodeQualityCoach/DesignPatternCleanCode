@@ -17,6 +17,11 @@ namespace PdfTools
     {
         public static void Main(string[] args)
         {
+            foreach (var arg in args)
+            {
+                Console.WriteLine(arg);
+            }
+
             if (args.Length == 0)
                 throw new ArgumentException("at least an action is required");
 

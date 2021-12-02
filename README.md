@@ -18,22 +18,22 @@ Am Ende des Tages haben wir einen allround Werkzeugkoffer, mit dem wir für die 
 
 # Marp'en der Folien
 
-Öffnet ein Port und erstellt die Folien on-demand bzw. bei Änderung.
+Startet auf dem PC einnen Service auf Port [8080](http://localhost:8080) und erstellt die Folien on-demand bzw. bei Änderung.
 
     marp -p -s --input-dir .\slides\
 
-Hiermit können alle Slides erzeigt werden. Output ist entsprechend der `build` Ordner.
+Hiermit können alle Slides erzeugt werden. Output ist entsprechend der `build` Ordner.
 
     marp --input-dir .\slides\
 
 `.marprc.yml` enthält die Konfiguration für Theme, Output etc.
 
-Die Slides befinden sich `Slides`
+Die gerenderten Slides befinden sich `Slides`
 
 # Die Folien
 
-* `rf` => Refactoring Pattern
-* `cc` => Clean Code Principle
-* `dp` => Design Pattern
-* `bp` => Best Practice
+* `RF` => Refactoring Pattern
+* `CC` => Clean Code Principle
+* `DP` => Design Pattern
+* `BP` => Best Practice
 
