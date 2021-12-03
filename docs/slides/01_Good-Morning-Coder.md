@@ -85,10 +85,8 @@ size: 4K
 * [Clean Code & Design Pattern](https://github.com/CodeQualityCoach/DesignPatternCleanCode)
 * [EUMEL Dj](https://github.com/EUMEL-Suite/EUMEL.Dj)
 
-
 ---
 # Have a break...
-
 
 - I have two workouts for a break
 

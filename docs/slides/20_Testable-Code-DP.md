@@ -121,10 +121,3 @@ size: 4K
 * Unit tests to verify architectural decisions
 * E.g. Each class must have a test
 * Operator methods must be virtual
-
----
-# Have a break...
-
-# ... have a workout
-
-[7 Minute Workout](https://www.youtube.com/watch?v=mmq5zZfmIws) or [Bring Sally Up](https://www.youtube.com/watch?v=41N6bKO-NVI)

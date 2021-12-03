@@ -25,7 +25,8 @@ Startet auf dem PC einnen Service auf Port [8080](http://localhost:8080) und ers
 Hiermit können alle Slides erzeugt werden. Output ist entsprechend der `build` Ordner.
 
     marp --input-dir .\slides\
-
+    marp --input-dir .\slides\ --pdf
+    
 `.marprc.yml` enthält die Konfiguration für Theme, Output etc.
 
 Die gerenderten Slides befinden sich `Slides`

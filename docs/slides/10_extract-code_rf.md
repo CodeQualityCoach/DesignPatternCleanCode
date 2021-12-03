@@ -68,11 +68,4 @@ size: 4K
 - IFooBar --> EmptyFooBar
 - Implemented along with Interface
 
-:vs: __Demo: Empty barcode class__
-
----
-# Have a break...
-
-# ... have a workout
-
-[7 Minute Workout](https://www.youtube.com/watch?v=mmq5zZfmIws) or [Bring Sally Up](https://www.youtube.com/watch?v=41N6bKO-NVI)
+:vs: __Demo: Empty logger class__
