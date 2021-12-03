@@ -113,8 +113,6 @@ size: 4K
 
 - Project 
 
-
-
 ---
 # Architectural Tests
 

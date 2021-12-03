@@ -7,7 +7,7 @@ public class Models
         void Log(string message);
     }
 
-    private class EmptyLogger : ILogger
+    public class EmptyLogger : ILogger
     {
         public void Log(string message)
         {
@@ -55,7 +55,7 @@ public class Models
         }
     }
 
-    private class EmptyMailer : IMailer
+    public class EmptyMailer : IMailer
     {
         public void SendMail(string message)
         {

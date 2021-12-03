@@ -48,7 +48,7 @@ size: 4K
 
 * Thomas Ley, patchwork, 2+3 kids
 * Coding since mid 90's
-* Aprehenticeship 2001
+* Aprehenticeship 2001 (**CGI**)
 * Started with .NET 1.1 in 2005
 * Speaker, Blog, GitHub, Publications
 * __I am a C# developer__.
@@ -59,7 +59,6 @@ size: 4K
 - Whats your name?
 - How long do you code?
 - Which language (e.g. C#) do you use?
-- What's your main technology (e.g. ASP.NET, WPF, SharePoint)?
 - Experience in Clean Code, Unit Testing & Design Pattern?
 - What do you expect from this workshop?
 
