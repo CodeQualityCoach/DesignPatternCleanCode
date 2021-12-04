@@ -25,7 +25,7 @@ namespace Zapfenstreich.DI
         {
             var container = new Container(_ =>
             {
-                _.For<Models.ILogger>().Use<Models.LoggerImpl1>().Singleton();
+                _.For<Models.ILogger>().Use<Models.EmptyLogger>().Singleton();
             });
 
             // lets create some more logger

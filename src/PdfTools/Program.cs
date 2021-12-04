@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using FSharp.Markdown;
 using FSharp.Markdown.Pdf;
 using iTextSharp.text;
@@ -15,6 +18,7 @@ namespace PdfTools
 {
     public class Program
     {
+
         public static void Main(string[] args)
         {
             foreach (var arg in args)
@@ -128,15 +132,21 @@ namespace PdfTools
     public class PdfArchiver
     {
         private readonly string _tempFile;
+        private readonly IBarcodeGenerator _barcodeGenerator;
+        private readonly IHttpClient _httpClient;
 
-        public PdfArchiver()
+        public PdfArchiver(IBarcodeGenerator barcodeGenerator = null,
+            IHttpClient httpClient = null)
         {
             _tempFile = Path.GetTempFileName();
+            // here we use the static service locator
+            _barcodeGenerator = barcodeGenerator ?? throw new ArgumentNullException(nameof(barcodeGenerator));
+            _httpClient = httpClient ?? new HttpClientWrapper();
         }
+
         public void Archive(string url)
         {
-            var client = new HttpClient();
-            var response = client.GetAsync(url).Result;
+            var response = _httpClient.GetAsync(url).Result;
             var pdf = response.Content.ReadAsByteArrayAsync().Result;
 
             var tmpTempFile = Path.GetTempFileName();
@@ -146,7 +156,7 @@ namespace PdfTools
             using (Stream inputImageStream = new MemoryStream())
             using (Stream outputPdfStream = new FileStream(_tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                var code = CreateInitCode(url);
+                var code = _barcodeGenerator.CreateTextBarcode(url);
                 code.Save(inputImageStream, ImageFormat.Jpeg);
                 inputImageStream.Position = 0;
 
@@ -161,39 +171,56 @@ namespace PdfTools
             }
         }
 
-        private Bitmap CreateInitCode(string text)
-        {
-            var qrCodeGenerator = new QRCodeGenerator();
-            var qrCodeData = qrCodeGenerator.CreateQrCode(new PayloadGenerator.Url(text), QRCodeGenerator.ECCLevel.Q);
-            var qrCode = new QRCode(qrCodeData);
-
-            return qrCode.GetGraphic(2);
-        }
-
         public void SaveAs(string destFile)
         {
             File.Copy(_tempFile, destFile, true);
         }
+    }
+
+    public class HttpClientWrapper : IHttpClient
+    {
+        private readonly HttpClient _httpClient;
+
+        public HttpClientWrapper()
+        {
+            _httpClient = new HttpClient();
+        }
+        public Task<HttpResponseMessage> GetAsync(string url)
+        {
+            return _httpClient.GetAsync(url);
+        }
+    }
+
+    public interface IHttpClient
+    {
+        Task<HttpResponseMessage> GetAsync(string url);
     }
 
     public class PdfCodeEnhancer
     {
         private readonly string _pdfFile;
+        private readonly IMyLogger _logger;
         private readonly string _tempFile;
+        private readonly IBarcodeGenerator _barcodeGenerator;
 
-        public PdfCodeEnhancer(string pdfFile)
+        public PdfCodeEnhancer(string pdfFile, IBarcodeGenerator barcodeGenerator = null, IMyLogger logger = null)
         {
             _pdfFile = pdfFile;
+            _logger = logger ?? new EmptyMyLogger();
             _tempFile = Path.GetTempFileName();
+            // here we use the static service locator
+            _barcodeGenerator = barcodeGenerator ?? throw new ArgumentNullException(nameof(barcodeGenerator));
         }
 
         public void AddTextAsCode(string text)
         {
+            _logger.Log($"Enhancing PDF with Text: {text}");
+
             using (Stream inputPdfStream = new FileStream(_pdfFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (Stream inputImageStream = new MemoryStream())
             using (Stream outputPdfStream = new FileStream(_tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                var code = CreateInitCode(text);
+                var code = _barcodeGenerator.CreateTextBarcode(text);
                 code.Save(inputImageStream, ImageFormat.Jpeg);
                 inputImageStream.Position = 0;
 
@@ -206,15 +233,7 @@ namespace PdfTools
                 pdfContentByte.AddImage(image);
                 stamper.Close();
             }
-        }
 
-        private Bitmap CreateInitCode(string text)
-        {
-            var qrCodeGenerator = new QRCodeGenerator();
-            var qrCodeData = qrCodeGenerator.CreateQrCode(text, QRCodeGenerator.ECCLevel.Q);
-            var qrCode = new QRCode(qrCodeData);
-
-            return qrCode.GetGraphic(2);
         }
 
         public void SaveAs(string destFile)
@@ -222,4 +241,83 @@ namespace PdfTools
             File.Copy(_tempFile, destFile, true);
         }
     }
+
+    public interface IMyLogger
+    {
+        void Log(string message);
+    }
+
+    public class EmptyMyLogger : IMyLogger
+    {
+        public void Log(string message) { }
+    }
+
+    public class MyConsoleLogger : IMyLogger
+    {
+        public void Log(string message)
+        {
+            Console.WriteLine(message);
+        }
+    }
+
+    public class MyTraceLogger : IMyLogger
+    {
+        public void Log(string message)
+        {
+            Trace.WriteLine(message);
+        }
+    }
+
+    #region refactored code
+
+    public interface IBarcodeGenerator
+    {
+        Bitmap CreateTextBarcode(string text);
+    }
+
+    /// <summary>
+    /// Create a QR barcode using QRCoder
+    /// </summary>
+    public class CQCoderBarcodeGeneratorSmall : IBarcodeGenerator
+    {
+        public Bitmap CreateTextBarcode(string text)
+        {
+            var qrCodeGenerator = new QRCodeGenerator();
+            var qrCodeData = qrCodeGenerator.CreateQrCode(new PayloadGenerator.Url(text), QRCodeGenerator.ECCLevel.Q);
+            var qrCode = new QRCode(qrCodeData);
+
+            return qrCode.GetGraphic(1);
+        }
+    }
+
+    /// <summary>
+    /// Create a QR barcode using QRCoder
+    /// </summary>
+    public class QRCoderBarcodeGenerator : IBarcodeGenerator
+    {
+        public Bitmap CreateTextBarcode(string text)
+        {
+            var qrCodeGenerator = new QRCodeGenerator();
+            var qrCodeData = qrCodeGenerator.CreateQrCode(new PayloadGenerator.Url(text), QRCodeGenerator.ECCLevel.Q);
+            var qrCode = new QRCode(qrCodeData);
+
+            return qrCode.GetGraphic(3);
+        }
+    }
+
+    public static class ServiceLocator
+    {
+        // this just creates it "thread safe" with a static initializer
+        private static IBarcodeGenerator _barcodeGenerator = new QRCoderBarcodeGenerator();
+
+        // But I would like to have a singleton
+        //private static  _barcodeGenerator;
+
+        public static IBarcodeGenerator BarcodeGenerator
+        {
+            get { return _barcodeGenerator; }
+        }
+    }
+
+    #endregion
 }

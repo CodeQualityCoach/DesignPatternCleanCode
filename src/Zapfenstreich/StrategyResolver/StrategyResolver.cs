@@ -1,8 +1,4 @@
-﻿using NUnit.Framework;
-using StructureMap;
-using Zapfenstreich;
-
-namespace DiTryouts
+﻿namespace DiTryouts
 {
     public class StrategyResolver<T> : IStrategyResolver<T> where T : class
     {
@@ -26,31 +22,6 @@ namespace DiTryouts
             var instance = _registeredClasses.SingleOrDefault(x => x.GetType().Name == setting) ?? throw new Exception($"Configured class {setting} for interface {interfaceName} was not found in registered classes");
 
             return instance;
-        }
-    }
-
-    [TestFixture]
-    public class StrategyResolverTests
-    {
-        [Test]
-        public void Resolve_Correct_Strategy()
-        {
-            var container = new Container(_ =>
-            {
-                _.For<Models.IMailer>().Use<Models.OutlookMailer>();
-                _.For<Models.IMailer>().Use<Models.EmptyMailer>();
-                _.For(typeof(IStrategyResolver<>)).Use(typeof(StrategyResolver<>));
-            });
-
-            var resolver = container.GetInstance<IStrategyResolver<Models.IMailer>>();
-            var mailer = resolver.Resolve();
-            mailer.SendMail("Hello World");
-
-
-            var state = container.GetInstance<GlobalState>();
-            state.IMailer = nameof(Models.EmptyMailer);
-            mailer.SendMail("Hello World");
-
         }
     }
 }
