@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using FSharp.Markdown;
-using FSharp.Markdown.Pdf;
-using iTextSharp.text;
 using iTextSharp.text.pdf;
+using PdfTools.Commands;
 using QRCoder;
 using Image = iTextSharp.text.Image;
+// ReSharper disable StringLiteralTypo
 
 namespace PdfTools
 {
@@ -17,111 +17,32 @@ namespace PdfTools
     {
         public static void Main(string[] args)
         {
-            foreach (var arg in args)
-            {
-                Console.WriteLine(arg);
-            }
-
             if (args.Length == 0)
-                throw new ArgumentException("at least an action is required");
+                throw new ArgumentException("at least one parameter as command is required.");
 
-            var action = args[0];
+            // Beware: there is one significant change: The commands only know the subset of args[] without the command name!
+            var commandName = args[0];
+            var commandContext = args.Skip(1).ToArray(); // we need to make this ToArray(), otherwise it is an IEnumerable
 
-            // markdown-in, pdf-out
-            if (string.Equals(action, "create", StringComparison.CurrentCultureIgnoreCase))
-                DoCreate(args.Skip(1).ToArray());
-
-            // pdf-in, qrcodetext, optional outfile
-            if (string.Equals(action, "addcode", StringComparison.CurrentCultureIgnoreCase))
+            // for the first step we simply create a dictionary, with the command name as key
+            var availableCommands = new Dictionary<string, ICommand>
             {
-                var enhancer = new PdfCodeEnhancer(args[1]);
+                { "create", new CreateCommand() },
+                { "addcode", new AddCodeCommand() },
+                { "download", new DownloadCommand() },
+                { "archive", new ArchiveCommand() },
+                { "combine", new CombineCommand() },
+            };
 
-                enhancer.AddTextAsCode(args[2]);
+            // now, we get the command instance
+            if (!availableCommands.TryGetValue(commandName, out var commandInstance))
+                throw new ArgumentException($"Command '{commandName}' cannot be found in list of available commands");
 
-                if (args.Length == 4)
-                    enhancer.SaveAs(args[3]);
-                else
-                    enhancer.SaveAs(args[1]);
-            }
+            // and check if the command can be executed
+            if (!commandInstance.CanExecute(commandContext))
+                throw new ArgumentException($"the command '{commandName}' cannot be executed");
 
-            // url, outfile
-            if (string.Equals(action, "download", StringComparison.CurrentCultureIgnoreCase))
-            {
-                var client = new HttpClient();
-                var response = client.GetAsync(args[1]).Result;
-                var pdf = response.Content.ReadAsByteArrayAsync().Result;
-
-                File.WriteAllBytes(args[2], pdf);
-            }
-
-            // url, outfile
-            if (string.Equals(action, "archive", StringComparison.CurrentCultureIgnoreCase))
-            {
-                var archiver = new PdfArchiver();
-                archiver.Archive(args[1]);
-                archiver.SaveAs(args[2]);
-            }
-
-            // url, outfile
-            if (string.Equals(action, "combine", StringComparison.CurrentCultureIgnoreCase))
-            {
-                CombineMultiplePDF(args.Skip(2).ToArray(), args[1]);
-            }
-        }
-
-        private static void DoCreate(string[] args)
-        {
-            if (args.Length != 2)
-                throw new ArgumentException("at least in and out parameter is required");
-
-            var inFile = args[0];
-            var outFile = args[1];
-
-            var mdText = File.ReadAllText(inFile);
-            var mdDoc = Markdown.Parse(mdText);
-
-            MarkdownPdf.Write(mdDoc, outFile);
-        }
-
-        private static void CombineMultiplePDF(string[] fileNames, string outFile)
-        {
-            // step 1: creation of a document-object
-            Document document = new Document();
-            //create newFileStream object which will be disposed at the end
-            using (FileStream newFileStream = new FileStream(outFile, FileMode.Create))
-            {
-                // step 2: we create a writer that listens to the document
-                PdfCopy writer = new PdfCopy(document, newFileStream);
-
-                // step 3: we open the document
-                document.Open();
-
-                foreach (string fileName in fileNames)
-                {
-                    // we create a reader for a certain document
-                    PdfReader reader = new PdfReader(fileName);
-                    reader.ConsolidateNamedDestinations();
-
-                    // step 4: we add content
-                    for (int i = 1; i <= reader.NumberOfPages; i++)
-                    {
-                        PdfImportedPage page = writer.GetImportedPage(reader, i);
-                        writer.AddPage(page);
-                    }
-
-                    //PRAcroForm form = reader.AcroForm;
-                    //if (form != null)
-                    //{
-                    //    writer.AddDocument(reader);
-                    //}
-
-                    reader.Close();
-                }
-
-                // step 5: we close the document and writer
-                writer.Close();
-                document.Close();
-            }//disposes the newFileStream object
+            commandInstance.Execute(commandContext);
         }
     }
 
