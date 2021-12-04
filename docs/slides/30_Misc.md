@@ -11,7 +11,7 @@ size: 4K
 <!-- _paginate: "" -->
 # Design Pattern & Clean Code
 
-## Testable Code
+## Pattern, Clean Code and Best Practices
 
 ###### Thomas Ley | @CleanCodeCoach
 
