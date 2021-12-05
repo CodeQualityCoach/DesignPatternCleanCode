@@ -41,10 +41,10 @@ namespace PdfTools
 
     public class PdfArchiver
     {
-        private readonly IOverlayImageGenerator _imageGenerator;
+        private readonly IOverlayImageService _imageGenerator;
         private readonly string _tempFile;
 
-        public PdfArchiver(IOverlayImageGenerator imageGenerator = null)
+        public PdfArchiver(IOverlayImageService imageGenerator = null)
         {
             _imageGenerator = imageGenerator ?? new QrCoderService();
             _tempFile = Path.GetTempFileName();
@@ -86,10 +86,10 @@ namespace PdfTools
     public class PdfCodeEnhancer
     {
         private readonly string _pdfFile;
-        private readonly IOverlayImageGenerator _imageGenerator;
+        private readonly IOverlayImageService _imageGenerator;
         private readonly string _tempFile;
 
-        public PdfCodeEnhancer(string pdfFile, IOverlayImageGenerator imageGenerator = null)
+        public PdfCodeEnhancer(string pdfFile, IOverlayImageService imageGenerator = null)
         {
             _pdfFile = pdfFile;
             _imageGenerator = imageGenerator ?? new QrCoderService();
