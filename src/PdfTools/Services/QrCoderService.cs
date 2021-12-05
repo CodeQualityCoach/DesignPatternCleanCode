@@ -4,7 +4,7 @@ using QRCoder;
 
 namespace PdfTools.Services
 {
-    internal class QrCoderService : IOverlayImageService
+    public class QrCoderService : IOverlayImageService
     {
         private const int GraphicSize = 2;
         private const QRCodeGenerator.ECCLevel Level = QRCodeGenerator.ECCLevel.Q;
@@ -23,7 +23,7 @@ namespace PdfTools.Services
         public Bitmap CreateOverlayImage(string text)
         {
             var qrCodeGenerator = new QRCodeGenerator();
-            var qrCodeData = qrCodeGenerator.CreateQrCode(text, Level);
+            var qrCodeData = qrCodeGenerator.CreateQrCode(text ?? string.Empty, Level);
             var qrCode = new QRCode(qrCodeData);
 
             return qrCode.GetGraphic(GraphicSize);

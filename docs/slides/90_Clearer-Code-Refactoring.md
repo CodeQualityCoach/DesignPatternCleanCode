@@ -67,10 +67,31 @@ In addition, the extracted class gets an interface to be more flexible according
 ---
 # [Zero Impact Injection] QR code
 
-* [GitHub Commit]()
+* [GitHub Commit](https://github.com/CodeQualityCoach/DesignPatternCleanCode/commit/9c062c5bec4fa5a8c952e2a59aa92db0e1e4001e)
 * Identify similar code
 * Move code to method (for QR code already done)
 * Move method to class
 * Extract interface
 * Inject class through interface into using class
 * Use default implementation to avoid breakting changes (no command changed!)
+
+---
+# Unit Tests
+
+The goal of this refactoring is implementing basic testing. It will create a test project and create a sample test.
+
+The test project uses NUnit and FluentAssertions (library to make test assertions more readable). 
+
+Basically there are two strategies with advantages and disad
+
+---
+# Unit Tests
+
+* [GitHub Commit]()
+* Create dedicated test project
+* Add sample test for previously created QR code generator: `QrCoderServiceTest`
+* I like `Be_Creatable()` test to check constrcutor and constrains like interfaces
+* Test happy path for `CreateOverlayImage(string)`
+* Test error path for `CreateOverlayImage(null)`
+* A null text returns an empty QR code
+
