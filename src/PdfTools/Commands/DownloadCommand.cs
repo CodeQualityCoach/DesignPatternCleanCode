@@ -4,8 +4,13 @@ using System.Net.Http;
 
 namespace PdfTools.Commands
 {
+    [CommandName("download")]
     public class DownloadCommand : ICommand
     {
+        public string Usage { get; } = @"usage: `pdftools download <url> <output>`
+
+Downloads a pdf file <url> from the web and stores it locally as <output>.";
+
         public bool CanExecute(object context)
         {
             // the context should be a string[], which are the program args without the command

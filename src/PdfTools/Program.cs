@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -17,32 +16,25 @@ namespace PdfTools
     {
         public static void Main(string[] args)
         {
-            if (args.Length == 0)
-                throw new ArgumentException("at least one parameter as command is required.");
-
             // Beware: there is one significant change: The commands only know the subset of args[] without the command name!
-            var commandName = args[0];
+            var commandName = (args.Length > 0) ? args[0] : string.Empty;
             var commandContext = args.Skip(1).ToArray(); // we need to make this ToArray(), otherwise it is an IEnumerable
 
-            // for the first step we simply create a dictionary, with the command name as key
-            var availableCommands = new Dictionary<string, ICommand>
-            {
-                { "create", new CreateCommand() },
-                { "addcode", new AddCodeCommand() },
-                { "download", new DownloadCommand() },
-                { "archive", new ArchiveCommand() },
-                { "combine", new CombineCommand() },
-            };
+            // We simply create a dictionary, with the command name as key. Thanks to reflection and attributes.
+            var availableCommands = CommandHelper.GetCommands().ToDictionary(x => x.GetName(), x => x);
 
             // now, we get the command instance
             if (!availableCommands.TryGetValue(commandName, out var commandInstance))
-                throw new ArgumentException($"Command '{commandName}' cannot be found in list of available commands");
+            {
+                Console.WriteLine($"Cannot find command: '{commandName}'\r\n");
+                commandInstance = new HelpCommand();
+            }
 
             // and check if the command can be executed
-            if (!commandInstance.CanExecute(commandContext))
-                throw new ArgumentException($"the command '{commandName}' cannot be executed");
-
-            commandInstance.Execute(commandContext);
+            if (commandInstance.CanExecute(commandContext))
+                commandInstance.Execute(commandContext);
+            else
+                Console.WriteLine(commandInstance.Usage);
         }
     }
 

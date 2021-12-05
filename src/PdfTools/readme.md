@@ -34,3 +34,7 @@ Infile is outfile, if outfile not given
 ## Action `combine`
 
 * parameter: outfile [list of infiles]
+
+# Testing
+
+The following commands download several files and combines them. It uses all available commands.

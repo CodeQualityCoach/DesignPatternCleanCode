@@ -6,8 +6,13 @@ using iTextSharp.text.pdf;
 
 namespace PdfTools.Commands
 {
+    [CommandName("combine")]
     public class CombineCommand : ICommand
     {
+        public string Usage { get; } = @"usage: `pdftools combine <output> <input 1> <input 2> [input 3..n]`
+
+Combines two or more input files <input n> into a single pdf <output>";
+
         public bool CanExecute(object context)
         {
             // the context should be a string[], which are the program args without the command

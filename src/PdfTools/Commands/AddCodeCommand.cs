@@ -2,8 +2,13 @@
 
 namespace PdfTools.Commands
 {
+    [CommandName("addcode")]
     public class AddCodeCommand : ICommand
     {
+        public string Usage { get; } = @"usage: `pdftools addcode <input> <text> [output]`
+
+Adds a QR Code with a <text> to the <input> pdf. If [output] is given, the pdf is stored as [output], otherwise it overrides <input>.";
+
         public bool CanExecute(object context)
         {
             // the context should be a string[], which are the program args without the command

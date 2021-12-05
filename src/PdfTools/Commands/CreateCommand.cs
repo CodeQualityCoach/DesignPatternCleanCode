@@ -5,8 +5,13 @@ using FSharp.Markdown.Pdf;
 
 namespace PdfTools.Commands
 {
+    [CommandName("create")]
     public class CreateCommand : ICommand
     {
+        public string Usage { get; } = @"usage: `pdftools create <markdown> <output>`
+
+Converts an input file <markdown> in markdown format into a pdf and stores it as  <output>.";
+
         public bool CanExecute(object context)
         {
             // the context should be a string[], which are the program args without the command

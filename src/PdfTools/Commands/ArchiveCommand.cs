@@ -2,9 +2,14 @@
 
 namespace PdfTools.Commands
 {
+    [CommandName("archive")]
     public class ArchiveCommand : ICommand
     {
-        public bool CanExecute(object context)
+        public string Usage { get; } = @"usage: `pdftools archive <url> <output>`
+
+Downloads a pdf file from an <url> and adds the url as a barcode on the first page. The output pdf is stored as <output>";
+
+      public bool CanExecute(object context)
         {
             // the context should be a string[], which are the program args without the command
             if (!(context is string[] args))

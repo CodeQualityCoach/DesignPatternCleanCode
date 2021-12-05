@@ -136,7 +136,10 @@
     <Compile Include="Commands\AddCodeCommand.cs" />
     <Compile Include="Commands\ArchiveCommand.cs" />
     <Compile Include="Commands\CombineCommand.cs" />
+    <Compile Include="Commands\CommandHelper.cs" />
+    <Compile Include="Commands\CommandNameAttribute.cs" />
     <Compile Include="Commands\DownloadCommand.cs" />
+    <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\CreateCommand.cs" />
     <Compile Include="Program.cs" />
