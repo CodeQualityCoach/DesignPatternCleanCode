@@ -73,4 +73,4 @@ In addition, the extracted class gets an interface to be more flexible according
 * Move method to class
 * Extract interface
 * Inject class through interface into using class
-* Use default implementation to avoid breakting changes
+* Use default implementation to avoid breakting changes (no command changed!)

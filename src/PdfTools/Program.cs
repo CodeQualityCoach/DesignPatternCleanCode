@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using iTextSharp.text.pdf;
 using PdfTools.Commands;
+using PdfTools.Services;
 using QRCoder;
 using Image = iTextSharp.text.Image;
 // ReSharper disable StringLiteralTypo
@@ -40,10 +41,12 @@ namespace PdfTools
 
     public class PdfArchiver
     {
+        private readonly IOverlayImageGenerator _imageGenerator;
         private readonly string _tempFile;
 
-        public PdfArchiver()
+        public PdfArchiver(IOverlayImageGenerator imageGenerator = null)
         {
+            _imageGenerator = imageGenerator ?? new QrCoderService();
             _tempFile = Path.GetTempFileName();
         }
         public void Archive(string url)
@@ -59,7 +62,7 @@ namespace PdfTools
             using (Stream inputImageStream = new MemoryStream())
             using (Stream outputPdfStream = new FileStream(_tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                var code = CreateInitCode(url);
+                var code = _imageGenerator.CreateOverlayImage(new Uri(url));
                 code.Save(inputImageStream, ImageFormat.Jpeg);
                 inputImageStream.Position = 0;
 
@@ -72,15 +75,6 @@ namespace PdfTools
                 pdfContentByte.AddImage(image);
                 stamper.Close();
             }
-        }
-
-        private Bitmap CreateInitCode(string text)
-        {
-            var qrCodeGenerator = new QRCodeGenerator();
-            var qrCodeData = qrCodeGenerator.CreateQrCode(new PayloadGenerator.Url(text), QRCodeGenerator.ECCLevel.Q);
-            var qrCode = new QRCode(qrCodeData);
-
-            return qrCode.GetGraphic(2);
         }
 
         public void SaveAs(string destFile)
@@ -92,11 +86,13 @@ namespace PdfTools
     public class PdfCodeEnhancer
     {
         private readonly string _pdfFile;
+        private readonly IOverlayImageGenerator _imageGenerator;
         private readonly string _tempFile;
 
-        public PdfCodeEnhancer(string pdfFile)
+        public PdfCodeEnhancer(string pdfFile, IOverlayImageGenerator imageGenerator = null)
         {
             _pdfFile = pdfFile;
+            _imageGenerator = imageGenerator ?? new QrCoderService();
             _tempFile = Path.GetTempFileName();
         }
 
@@ -106,7 +102,7 @@ namespace PdfTools
             using (Stream inputImageStream = new MemoryStream())
             using (Stream outputPdfStream = new FileStream(_tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                var code = CreateInitCode(text);
+                var code = _imageGenerator.CreateOverlayImage(text);
                 code.Save(inputImageStream, ImageFormat.Jpeg);
                 inputImageStream.Position = 0;
 
@@ -119,15 +115,6 @@ namespace PdfTools
                 pdfContentByte.AddImage(image);
                 stamper.Close();
             }
-        }
-
-        private Bitmap CreateInitCode(string text)
-        {
-            var qrCodeGenerator = new QRCodeGenerator();
-            var qrCodeData = qrCodeGenerator.CreateQrCode(text, QRCodeGenerator.ECCLevel.Q);
-            var qrCode = new QRCode(qrCodeData);
-
-            return qrCode.GetGraphic(2);
         }
 
         public void SaveAs(string destFile)
