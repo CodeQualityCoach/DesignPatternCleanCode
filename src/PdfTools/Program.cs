@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
-using iTextSharp.text.pdf;
 using PdfTools.Commands;
-using PdfTools.Services;
-using QRCoder;
-using Image = iTextSharp.text.Image;
+
 // ReSharper disable StringLiteralTypo
 
 namespace PdfTools
@@ -36,90 +29,6 @@ namespace PdfTools
                 commandInstance.Execute(commandContext);
             else
                 Console.WriteLine(commandInstance.Usage);
-        }
-    }
-
-    public class PdfArchiver
-    {
-        private readonly IOverlayImageService _imageGenerator;
-        private readonly string _tempFile;
-
-        public PdfArchiver(IOverlayImageService imageGenerator = null)
-        {
-            _imageGenerator = imageGenerator ?? new QrCoderService();
-            _tempFile = Path.GetTempFileName();
-        }
-        public void Archive(string url)
-        {
-            var client = new HttpClient();
-            var response = client.GetAsync(url).Result;
-            var pdf = response.Content.ReadAsByteArrayAsync().Result;
-
-            var tmpTempFile = Path.GetTempFileName();
-            File.WriteAllBytes(tmpTempFile, pdf);
-
-            using (Stream inputPdfStream = new FileStream(tmpTempFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (Stream inputImageStream = new MemoryStream())
-            using (Stream outputPdfStream = new FileStream(_tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                var code = _imageGenerator.CreateOverlayImage(new Uri(url));
-                code.Save(inputImageStream, ImageFormat.Jpeg);
-                inputImageStream.Position = 0;
-
-                var reader = new PdfReader(inputPdfStream);
-                var stamper = new PdfStamper(reader, outputPdfStream);
-                var pdfContentByte = stamper.GetOverContent(1);
-
-                var image = Image.GetInstance(inputImageStream);
-                image.SetAbsolutePosition(5, 5);
-                pdfContentByte.AddImage(image);
-                stamper.Close();
-            }
-        }
-
-        public void SaveAs(string destFile)
-        {
-            File.Copy(_tempFile, destFile, true);
-        }
-    }
-
-    public class PdfCodeEnhancer
-    {
-        private readonly string _pdfFile;
-        private readonly IOverlayImageService _imageGenerator;
-        private readonly string _tempFile;
-
-        public PdfCodeEnhancer(string pdfFile, IOverlayImageService imageGenerator = null)
-        {
-            _pdfFile = pdfFile;
-            _imageGenerator = imageGenerator ?? new QrCoderService();
-            _tempFile = Path.GetTempFileName();
-        }
-
-        public void AddTextAsCode(string text)
-        {
-            using (Stream inputPdfStream = new FileStream(_pdfFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (Stream inputImageStream = new MemoryStream())
-            using (Stream outputPdfStream = new FileStream(_tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                var code = _imageGenerator.CreateOverlayImage(text);
-                code.Save(inputImageStream, ImageFormat.Jpeg);
-                inputImageStream.Position = 0;
-
-                var reader = new PdfReader(inputPdfStream);
-                var stamper = new PdfStamper(reader, outputPdfStream);
-                var pdfContentByte = stamper.GetOverContent(1);
-
-                var image = Image.GetInstance(inputImageStream);
-                image.SetAbsolutePosition(5, 5);
-                pdfContentByte.AddImage(image);
-                stamper.Close();
-            }
-        }
-
-        public void SaveAs(string destFile)
-        {
-            File.Copy(_tempFile, destFile, true);
         }
     }
 }

@@ -87,11 +87,49 @@ Basically there are two strategies with advantages and disad
 ---
 # Unit Tests
 
-* [GitHub Commit]()
+* [GitHub Commit](https://github.com/CodeQualityCoach/DesignPatternCleanCode/commit/1c9c2442b74102660ffe21de65f05e583b820d41)
 * Create dedicated test project
 * Add sample test for previously created QR code generator: `QrCoderServiceTest`
 * I like `Be_Creatable()` test to check constrcutor and constrains like interfaces
 * Test happy path for `CreateOverlayImage(string)`
 * Test error path for `CreateOverlayImage(null)`
 * A null text returns an empty QR code
+
+---
+# Separate PDF Handler
+
+The goal of this refactoring is separating concerns more clearly and handle download in a single class instead of copy-paste code in both classes.
+
+The separation leads to a single class with separated methods.
+
+---
+# Separate PDF Handler
+
+* Create a `PdfHandler` class
+* Separate the concerns of `PdfArchiver` and `PdfCodeEnhancer` methods
+* Make smaller but generic methods to handle the request
+* Refactor the commands to use the new class.
+
+---
+# [Static Class Wrapper]
+
+The goal of this refactoring is testing 
+
+---
+# [Static Class Wrapper]
+
+* [GitHub Commit]()
+
+
+---
+# Future Refactorings
+
+* Where Do I put a factory? Pdf Downloader & Pdf QrCode Adder & Pdf Merger
+
+* Extract the "download" to a IDocumentDownloader
+* Extract HttpClient
+* System.Io.Abstractoins
+* Refactor commands to inject dependencies and use a service locator to create the object graph
+* Decorate the downloader with a QR code overlay adder
+
 

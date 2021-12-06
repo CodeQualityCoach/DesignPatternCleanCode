@@ -1,4 +1,5 @@
 ﻿using System;
+using PdfTools.Handler;
 
 namespace PdfTools.Commands
 {
@@ -34,9 +35,10 @@ Adds a QR Code with a <text> to the <input> pdf. If [output] is given, the pdf i
         private void DoExecute(string[] args)
         {
             // we don't change anything here. The goal is the command pattern.
-            var enhancer = new PdfCodeEnhancer(args[0]);
+            var enhancer = new PdfHandler();
 
-            enhancer.AddTextAsCode(args[1]);
+            enhancer.Open(args[0]);
+            enhancer.AddOverlayImage(args[1]);
 
             if (args.Length == 4)
                 enhancer.SaveAs(args[2]);

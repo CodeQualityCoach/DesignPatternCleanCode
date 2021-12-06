@@ -1,4 +1,5 @@
 ﻿using System;
+using PdfTools.Handler;
 
 namespace PdfTools.Commands
 {
@@ -33,8 +34,9 @@ Downloads a pdf file from an <url> and adds the url as a barcode on the first pa
 
         private void DoExecute(string[] args)
         {
-            var archiver = new PdfArchiver();
-            archiver.Archive(args[0]);
+            var archiver = new PdfHandler();
+            archiver.Download(args[0]);
+            archiver.AddOverlayImage(args[0]);
             archiver.SaveAs(args[1]);
         }
     }
