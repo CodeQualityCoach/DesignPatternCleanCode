@@ -1,6 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Net.Http;
+using PdfTools.Handler;
 
 namespace PdfTools.Commands
 {
@@ -35,11 +34,9 @@ Downloads a pdf file <url> from the web and stores it locally as <output>.";
 
         private void DoExecute(string[] args)
         {
-            var client = new HttpClient();
-            var response = client.GetAsync(args[0]).Result;
-            var pdf = response.Content.ReadAsByteArrayAsync().Result;
-
-            File.WriteAllBytes(args[1], pdf);
+            var handler = new PdfHandler();
+            handler.Download(args[0]);
+            handler.SaveAs(args[1]);
         }
     }
 }

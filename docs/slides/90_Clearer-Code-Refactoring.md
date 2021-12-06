@@ -105,6 +105,7 @@ The separation leads to a single class with separated methods.
 ---
 # Separate PDF Handler
 
+* [GitHub Commit](https://github.com/CodeQualityCoach/DesignPatternCleanCode/commit/1aa332cb44160f6a7f95028a429c824444f55198)
 * Create a `PdfHandler` class
 * Separate the concerns of `PdfArchiver` and `PdfCodeEnhancer` methods
 * Make smaller but generic methods to handle the request
