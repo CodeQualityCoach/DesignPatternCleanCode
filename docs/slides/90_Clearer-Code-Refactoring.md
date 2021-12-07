@@ -110,17 +110,46 @@ The separation leads to a single class with separated methods.
 * Separate the concerns of `PdfArchiver` and `PdfCodeEnhancer` methods
 * Make smaller but generic methods to handle the request
 * Refactor the commands to use the new class.
+* Review Code and check for additional places to change
+
+---
+# Cleanup Principles
+
+The following clean code principles help to make the code better, if every team member acts this was.
+
+* __Broken Windows Principle__: When you start adding crappy code, time by thime, everyone will follow and create crappy code, too.
+* __Boyscout Rule__: Leave a place in a better shape than you found it. Rename variables to match the purpose better, refactor small code parts etc.
+* __30 Second Rule__: If it only takes 30 seconds, do it now and do not put it onto the bench.
+
+---
+# Cleanup Principles
+
+* [GitHub Commit](https://github.com/CodeQualityCoach/DesignPatternCleanCode/commit/e0d39d45f54991e628f4dffa6cd3674c481d066e)
+* Refactor variable names to get rid of the legacy names
+* Identify crappy code and simply use a previously refactored class
+* Clean namespaces regularily and remove unused variables
 
 ---
 # [Static Class Wrapper]
 
-The goal of this refactoring is testing 
+The goal of this refactoring is the testability of the pdf handler regarding regarding the http download.
+
+An interface and wrapper is created for HttpClient so it can be injected through an interface. In this example, all `Http*` return values are abstracted and wrapped with an interface and only the used methds are added.
+
+After that, "Zero Impact Injection" is used to have non breaking changes and default behaviour. `Commands` have not changed.
 
 ---
 # [Static Class Wrapper]
 
 * [GitHub Commit]()
 
+* Add interface `IHttpClient` and inject interface to class
+* Use interface in class (so we can get the used methods easily)
+* Create a wrapper `HttpClientWrapper` and implement interface
+* Create the client instance in constructor
+* Add a "static class wrapper" for `HttpResponseMessage` and `HttpContent`
+* In opposite to `HttpClientWrapper`, provide the wrapped instance as constructor parameter
+* [YAGNI]. Only implement used methods and properties
 
 ---
 # Future Refactorings
@@ -133,4 +162,4 @@ The goal of this refactoring is testing
 * Refactor commands to inject dependencies and use a service locator to create the object graph
 * Decorate the downloader with a QR code overlay adder
 
-
+* Facade in HttpClient wrapper so we can get rid of two interfaces.

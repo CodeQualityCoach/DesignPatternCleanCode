@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Net.Http;
 using iTextSharp.text.pdf;
+using PdfTools.Net;
 using PdfTools.Services;
 using Image = iTextSharp.text.Image;
 
@@ -10,12 +10,17 @@ namespace PdfTools.Handler
 {
     public class PdfHandler
     {
+        private readonly IHttpClient _httpClient;
         private readonly IOverlayImageService _imageGenerator;
         private readonly string _tempFile;
 
-        public PdfHandler(IOverlayImageService imageGenerator = null)
+        public PdfHandler(IOverlayImageService imageGenerator = null, IHttpClient httpClient = null)
         {
+            // here we use "Zero Impact Injection", which means, the calling class has not changed and functionality
+            // has not changed. The code behaves as always, but in testing we will see, that we can inject different behaviour.
+            _httpClient = httpClient ?? new HttpClientWrapper();
             _imageGenerator = imageGenerator ?? new QrCoderService();
+
             _tempFile = Path.GetTempFileName();
         }
 
@@ -26,8 +31,7 @@ namespace PdfTools.Handler
 
         public void Download(string url)
         {
-            var client = new HttpClient();
-            var response = client.GetAsync(url).Result;
+            var response = _httpClient.GetAsync(url).Result;
             var pdf = response.Content.ReadAsByteArrayAsync().Result;
 
             var tmpTempFile = Path.GetTempFileName();
@@ -41,8 +45,8 @@ namespace PdfTools.Handler
             using (Stream inputImageStream = new MemoryStream())
             using (Stream outputPdfStream = new FileStream(_tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                var code = Uri.TryCreate(url, UriKind.Absolute, out var uri) 
-                    ? _imageGenerator.CreateOverlayImage(uri) 
+                var code = Uri.TryCreate(url, UriKind.Absolute, out var uri)
+                    ? _imageGenerator.CreateOverlayImage(uri)
                     : _imageGenerator.CreateOverlayImage(url);
 
                 code.Save(inputImageStream, ImageFormat.Jpeg);

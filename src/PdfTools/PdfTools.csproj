@@ -138,6 +138,12 @@
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\CreateCommand.cs" />
     <Compile Include="Handler\PdfHandler.cs" />
+    <Compile Include="Net\HttpClientWrapper.cs" />
+    <Compile Include="Net\HttpContentWrapper.cs" />
+    <Compile Include="Net\HttpResponseMessageWrapper.cs" />
+    <Compile Include="Net\IHttpClient.cs" />
+    <Compile Include="Net\IHttpContent.cs" />
+    <Compile Include="Net\IHttpResponseMessage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\QrCoderService.cs" />
