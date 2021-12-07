@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
+using PdfTools.Handler;
 
 namespace PdfTools.Commands
 {
@@ -40,37 +38,15 @@ Combines two or more input files <input n> into a single pdf <output>";
             var fileNames = args.Skip(1).ToArray();
             var outFile = args[0];
 
-            // step 1: creation of a document-object
-            var document = new Document();
-            //create newFileStream object which will be disposed at the end
-            using (var newFileStream = new FileStream(outFile, FileMode.Create))
+            using (var handler = new PdfHandler())
             {
-                // step 2: we create a writer that listens to the document
-                var writer = new PdfCopy(document, newFileStream);
+                handler.Open(fileNames.First());
 
-                // step 3: we open the document
-                document.Open();
+                // let us append all the other files to the first file
+                handler.Append(fileNames.Skip(1).ToArray());
 
-                foreach (var fileName in fileNames)
-                {
-                    // we create a reader for a certain document
-                    var reader = new PdfReader(fileName);
-                    reader.ConsolidateNamedDestinations();
-
-                    // step 4: we add content
-                    for (var i = 1; i <= reader.NumberOfPages; i++)
-                    {
-                        var page = writer.GetImportedPage(reader, i);
-                        writer.AddPage(page);
-                    }
-
-                    reader.Close();
-                }
-
-                // step 5: we close the document and writer
-                writer.Close();
-                document.Close();
-            } //disposes the newFileStream object
+                handler.SaveAs(outFile);
+            }
         }
     }
 }

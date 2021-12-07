@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
-using FSharp.Markdown;
-using FSharp.Markdown.Pdf;
+using PdfTools.Handler;
 
 namespace PdfTools.Commands
 {
@@ -39,10 +37,11 @@ Converts an input file <markdown> in markdown format into a pdf and stores it as
             var inFile = args[0];
             var outFile = args[1];
 
-            var mdText = File.ReadAllText(inFile);
-            var mdDoc = Markdown.Parse(mdText);
-
-            MarkdownPdf.Write(mdDoc, outFile);
+            using (var handler = new PdfHandler())
+            {
+                handler.CreateFromMarkdown(inFile);
+                handler.SaveAs(outFile);
+            }
         }
     }
 }

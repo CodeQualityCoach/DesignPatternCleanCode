@@ -113,9 +113,9 @@ The separation leads to a single class with separated methods.
 * Review Code and check for additional places to change
 
 ---
-# Cleanup Principles
+# Clean-up Principles
 
-The following clean code principles help to make the code better, if every team member acts this was.
+The following clean-up code principles help to make the code better, if every team member acts this was.
 
 * __Broken Windows Principle__: When you start adding crappy code, time by thime, everyone will follow and create crappy code, too.
 * __Boyscout Rule__: Leave a place in a better shape than you found it. Rename variables to match the purpose better, refactor small code parts etc.
@@ -175,10 +175,24 @@ The goal of this refactoring is using an existing library for [Static Class Wrap
 ---
 # Use `System.Io.Abstractions`
 
-* [GitHub Commit]()
-* Remove "System.IO" namespace everywhere in classes
+* [GitHub Commit](https://github.com/CodeQualityCoach/DesignPatternCleanCode/commit/5431e4c925ed0262097d1a68405822c2c193ab78)
+* Remove "System.IO" namespace everywhere in `PdfHandler` classes
 * Inject the interface "IFileSystem" and use it for file access
-* Use default implementation `FileSystem`
+* Use default implementation `FileSystem` (which is a factory for FileSystem*Wrapper)
+* [GitHub Commit]()
+
+---
+# Clean Up the code
+
+After all the refactoring to a single class or only a subset of classes, some code cleanups are still outstanding. 
+
+This refactring will clean up the missing classes and components and just apply the previous chapters to all parts of the code.
+
+---
+# Clean Up the code
+
+* Move all pdf handling and transformation code to `PdfHandler`
+
 
 ---
 # Testing the Code
