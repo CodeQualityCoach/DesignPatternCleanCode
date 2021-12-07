@@ -34,9 +34,11 @@ Downloads a pdf file <url> from the web and stores it locally as <output>.";
 
         private void DoExecute(string[] args)
         {
-            var handler = new PdfHandler();
-            handler.Download(args[0]);
-            handler.SaveAs(args[1]);
+            using (var handler = new PdfHandler())
+            {
+                handler.Download(args[0]);
+                handler.SaveAs(args[1]);
+            }
         }
     }
 }

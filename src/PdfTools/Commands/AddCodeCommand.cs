@@ -34,16 +34,16 @@ Adds a QR Code with a <text> to the <input> pdf. If [output] is given, the pdf i
 
         private void DoExecute(string[] args)
         {
-            // we don't change anything here. The goal is the command pattern.
-            var handler = new PdfHandler();
+            using (var handler = new PdfHandler())
+            {
+                handler.Open(args[0]);
+                handler.AddOverlayImage(args[1]);
 
-            handler.Open(args[0]);
-            handler.AddOverlayImage(args[1]);
-
-            if (args.Length == 4)
-                handler.SaveAs(args[2]);
-            else
-                handler.SaveAs(args[0]);
+                if (args.Length == 4)
+                    handler.SaveAs(args[2]);
+                else
+                    handler.SaveAs(args[0]);
+            }
         }
     }
 }

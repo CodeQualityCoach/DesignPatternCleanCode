@@ -34,10 +34,12 @@ Downloads a pdf file from an <url> and adds the url as a barcode on the first pa
 
         private void DoExecute(string[] args)
         {
-            var handler = new PdfHandler();
-            handler.Download(args[0]);
-            handler.AddOverlayImage(args[0]);
-            handler.SaveAs(args[1]);
+            using (var handler = new PdfHandler())
+            {
+                handler.Download(args[0]);
+                handler.AddOverlayImage(args[0]);
+                handler.SaveAs(args[1]);
+            }
         }
     }
 }

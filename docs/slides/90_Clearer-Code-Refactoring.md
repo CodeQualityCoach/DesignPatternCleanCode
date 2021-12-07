@@ -141,25 +141,37 @@ After that, "Zero Impact Injection" is used to have non breaking changes and def
 ---
 # [Static Class Wrapper]
 
-* [GitHub Commit]()
+* [GitHub Commit](https://github.com/CodeQualityCoach/DesignPatternCleanCode/commit/ad8979e3c0843916b83ace12e9fe9ee207a810e3)
 
 * Add interface `IHttpClient` and inject interface to class
 * Use interface in class (so we can get the used methods easily)
-* Create a wrapper `HttpClientWrapper` and implement interface
-* Create the client instance in constructor
+* Create a wrapper `HttpClientWrapper` and implement interface.
 * Add a "static class wrapper" for `HttpResponseMessage` and `HttpContent`
 * In opposite to `HttpClientWrapper`, provide the wrapped instance as constructor parameter
-* [YAGNI]. Only implement used methods and properties
+* [YAGNI]. Only implement methods and properties which are used
+
+---
+# [Dispose Pattern]
+
+The goal of this refactoring is implementing the (C#/.NET) dispose pattern so we can clean the resources we used by our code.
+
+In our `PdfHandler` we can delete the temporary file which is created and modified by the class.
+
+See [external Documentation](https://docs.microsoft.com/en-us/dotnet/api/system.idisposable?redirectedfrom=MSDN&view=net-6.0) for more Information on Dispose/Finalize.
+
+---
+# [Dispose Pattern]
+
+* [GitHub Commit](https://github.com/CodeQualityCoach/DesignPatternCleanCode/commit/272953c8f456b6859a7f9c90dce5fa43f74f4888)
+* Interface and implementation added to wrapper so they dispose their 'wrapee'
+* IDisposable pattern in a clean form in `PdfHandler`
+* Delete temporary file if `Dispose()` is called
+
 
 ---
 # Future Refactorings
 
-* Where Do I put a factory? Pdf Downloader & Pdf QrCode Adder & Pdf Merger
-
-* Extract the "download" to a IDocumentDownloader
-* Extract HttpClient
 * System.Io.Abstractoins
 * Refactor commands to inject dependencies and use a service locator to create the object graph
 * Decorate the downloader with a QR code overlay adder
-
 * Facade in HttpClient wrapper so we can get rid of two interfaces.
