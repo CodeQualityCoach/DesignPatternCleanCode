@@ -1,11 +1,12 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace PdfTools.Net
 {
     [ExcludeFromCodeCoverage] // This class can be excluded from coverage. We extracted this code because it is not testable (no injectable behaviour).
-    public class HttpClientWrapper : IHttpClient
+    public class HttpClientWrapper : IHttpClient, IDisposable
     {
         private readonly HttpClient _client;
 
@@ -21,6 +22,11 @@ namespace PdfTools.Net
         public Task<IHttpResponseMessage> GetAsync(string url)
         {
             return Task.FromResult(new HttpResponseMessageWrapper(_client.GetAsync(url).Result) as IHttpResponseMessage);
+        }
+
+        public void Dispose()
+        {
+            _client?.Dispose();
         }
     }
 }
