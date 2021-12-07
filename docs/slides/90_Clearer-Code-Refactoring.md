@@ -162,11 +162,11 @@ See [external Documentation](https://docs.microsoft.com/en-us/dotnet/api/system.
 ---
 # [Dispose Pattern]
 
+<<<<<<< HEAD
 * [GitHub Commit](https://github.com/CodeQualityCoach/DesignPatternCleanCode/commit/272953c8f456b6859a7f9c90dce5fa43f74f4888)
 * Interface and implementation added to wrapper so they dispose their 'wrapee'
 * IDisposable pattern in a clean form in `PdfHandler`
 * Delete temporary file if `Dispose()` is called
-
 
 ---
 # Future Refactorings
