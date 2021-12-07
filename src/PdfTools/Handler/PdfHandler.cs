@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Drawing.Imaging;
 using System.IO;
+using System.IO.Abstractions;
 using iTextSharp.text.pdf;
 using PdfTools.Net;
 using PdfTools.Services;
 using Image = iTextSharp.text.Image;
+using iTextSharp.text;
 
 namespace PdfTools.Handler
 {
@@ -16,21 +18,23 @@ namespace PdfTools.Handler
     {
         private readonly IHttpClient _httpClient;
         private readonly IOverlayImageService _imageGenerator;
-        private readonly string _tempFile;
+        private string _tempFile;
+        private readonly IFileSystem _fileSystem;
 
-        public PdfHandler(IOverlayImageService imageGenerator = null, IHttpClient httpClient = null)
+        public PdfHandler(IOverlayImageService imageGenerator = null, IHttpClient httpClient = null, IFileSystem fileSystem = null)
         {
             // here we use "Zero Impact Injection", which means, the calling class has not changed and functionality
             // has not changed. The code behaves as always, but in testing we will see, that we can inject different behaviour.
             _httpClient = httpClient ?? new HttpClientWrapper();
             _imageGenerator = imageGenerator ?? new QrCoderService();
+            _fileSystem = fileSystem ?? new FileSystem();
 
-            _tempFile = Path.GetTempFileName();
+            _tempFile =_fileSystem.Path.GetTempFileName();
         }
 
         public void Open(string filepath)
         {
-            File.Copy(filepath, _tempFile, true);
+            _fileSystem.File.Copy(filepath, _tempFile, true);
         }
 
         public void Download(string url)
@@ -39,16 +43,16 @@ namespace PdfTools.Handler
             var response = _httpClient.GetAsync(url).Result;
             var pdf = response.Content.ReadAsByteArrayAsync().Result;
 
-            var tmpTempFile = Path.GetTempFileName();
-            File.WriteAllBytes(tmpTempFile, pdf);
+            var tmpTempFile = _fileSystem.Path.GetTempFileName();
+            _fileSystem.File.WriteAllBytes(tmpTempFile, pdf);
 
         }
 
         public void AddOverlayImage(string url)
         {
-            using (Stream inputPdfStream = new FileStream(_tempFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var inputPdfStream = _fileSystem.FileStream.Create(_tempFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (Stream inputImageStream = new MemoryStream())
-            using (Stream outputPdfStream = new FileStream(_tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var outputPdfStream = _fileSystem.FileStream.Create(_tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 var code = Uri.TryCreate(url, UriKind.Absolute, out var uri)
                     ? _imageGenerator.CreateOverlayImage(uri)
@@ -70,7 +74,7 @@ namespace PdfTools.Handler
 
         public void SaveAs(string destFile)
         {
-            File.Copy(_tempFile, destFile, true);
+            _fileSystem.File.Copy(_tempFile, destFile, true);
         }
 
         #region Implement IDisposable with finalizer
@@ -82,8 +86,8 @@ namespace PdfTools.Handler
             if (disposing)
             {
                 // we can use the IDisposable to explicitly clean up our temp file.
-                if (File.Exists(_tempFile))
-                    File.Delete(_tempFile);
+                if (_fileSystem.File.Exists(_tempFile))
+                    _fileSystem.File.Delete(_tempFile);
             }
 
             // here we need to free unmanaged resources so this will be called by the finalizer below

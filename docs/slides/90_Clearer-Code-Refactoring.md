@@ -162,16 +162,40 @@ See [external Documentation](https://docs.microsoft.com/en-us/dotnet/api/system.
 ---
 # [Dispose Pattern]
 
-<<<<<<< HEAD
-* [GitHub Commit](https://github.com/CodeQualityCoach/DesignPatternCleanCode/commit/272953c8f456b6859a7f9c90dce5fa43f74f4888)
+* [GitHub Commit](https://github.com/CodeQualityCoach/DesignPatternCleanCode/commit/aa4899652a303973a22e39df022faba0ffa33d64)
 * Interface and implementation added to wrapper so they dispose their 'wrapee'
 * IDisposable pattern in a clean form in `PdfHandler`
 * Delete temporary file if `Dispose()` is called
 
 ---
+# Use `System.Io.Abstractions`
+
+The goal of this refactoring is using an existing library for [Static Class Wrapper] on `System.IO` namespace. The library is called `System.Io.Abstractions` and uses the same pattern, we used before.
+
+---
+# Use `System.Io.Abstractions`
+
+* [GitHub Commit]()
+* Remove "System.IO" namespace everywhere in classes
+* Inject the interface "IFileSystem" and use it for file access
+* Use default implementation `FileSystem`
+
+---
+# Testing the Code
+
+The goal of this refactoring is testing some of the code which was refactored in the last commits. This shows all the advantages of our refactorign and explains gained testability.
+
+---
+# Testing the Code
+
+* [GitHub Commit]()
+* Create a test class for each class
+* Create a 'fake' or 'mock' for each dependency (NSubstitute)
+* Inject dependency behaviour to know how the dependency behaves
+
+---
 # Future Refactorings
 
-* System.Io.Abstractoins
 * Refactor commands to inject dependencies and use a service locator to create the object graph
 * Decorate the downloader with a QR code overlay adder
 * Facade in HttpClient wrapper so we can get rid of two interfaces.
