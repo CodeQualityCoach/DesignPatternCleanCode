@@ -140,7 +140,10 @@
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\CreateCommand.cs" />
+    <Compile Include="Handler\IDocumentHandler.cs" />
+    <Compile Include="Handler\IDocumentHandlerFactory.cs" />
     <Compile Include="Handler\PdfHandler.cs" />
+    <Compile Include="Handler\PdfHandlerFactory.cs" />
     <Compile Include="Net\HttpClientWrapper.cs" />
     <Compile Include="Net\HttpContentWrapper.cs" />
     <Compile Include="Net\HttpResponseMessageWrapper.cs" />

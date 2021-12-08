@@ -6,6 +6,13 @@ namespace PdfTools.Commands
     [CommandName("download")]
     public class DownloadCommand : ICommand
     {
+        private readonly IDocumentHandlerFactory _handlerFactory;
+
+        public DownloadCommand(IDocumentHandlerFactory handlerFactory)
+        {
+            _handlerFactory = handlerFactory ?? new PdfHandlerFactory();
+        }
+
         public string Usage { get; } = @"usage: `pdftools download <url> <output>`
 
 Downloads a pdf file <url> from the web and stores it locally as <output>.";
@@ -34,9 +41,8 @@ Downloads a pdf file <url> from the web and stores it locally as <output>.";
 
         private void DoExecute(string[] args)
         {
-            using (var handler = new PdfHandler())
+            using (var handler = _handlerFactory.Download(args[0]))
             {
-                handler.Download(args[0]);
                 handler.SaveAs(args[1]);
             }
         }

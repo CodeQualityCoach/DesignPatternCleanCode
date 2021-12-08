@@ -7,6 +7,13 @@ namespace PdfTools.Commands
     [CommandName("combine")]
     public class CombineCommand : ICommand
     {
+        private readonly IDocumentHandlerFactory _handlerFactory;
+
+        public CombineCommand(IDocumentHandlerFactory handlerFactory)
+        {
+            _handlerFactory = handlerFactory ?? new PdfHandlerFactory();
+        }
+
         public string Usage { get; } = @"usage: `pdftools combine <output> <input 1> <input 2> [input 3..n]`
 
 Combines two or more input files <input n> into a single pdf <output>";
@@ -38,10 +45,8 @@ Combines two or more input files <input n> into a single pdf <output>";
             var fileNames = args.Skip(1).ToArray();
             var outFile = args[0];
 
-            using (var handler = new PdfHandler())
+            using (var handler =_handlerFactory.CreateFromFile(fileNames.First()))
             {
-                handler.Open(fileNames.First());
-
                 // let us append all the other files to the first file
                 handler.Append(fileNames.Skip(1).ToArray());
 

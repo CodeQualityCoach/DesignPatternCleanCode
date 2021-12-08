@@ -6,11 +6,18 @@ namespace PdfTools.Commands
     [CommandName("archive")]
     public class ArchiveCommand : ICommand
     {
+        private readonly IDocumentHandlerFactory _handlerFactory;
+
+        public ArchiveCommand(IDocumentHandlerFactory handlerFactory)
+        {
+            _handlerFactory = handlerFactory ?? new PdfHandlerFactory();
+        }
+
         public string Usage { get; } = @"usage: `pdftools archive <url> <output>`
 
 Downloads a pdf file from an <url> and adds the url as a barcode on the first page. The output pdf is stored as <output>";
 
-      public bool CanExecute(object context)
+        public bool CanExecute(object context)
         {
             // the context should be a string[], which are the program args without the command
             if (!(context is string[] args))
@@ -34,9 +41,8 @@ Downloads a pdf file from an <url> and adds the url as a barcode on the first pa
 
         private void DoExecute(string[] args)
         {
-            using (var handler = new PdfHandler())
+            using (var handler = _handlerFactory.Download(args[0]))
             {
-                handler.Download(args[0]);
                 handler.AddOverlayImage(args[0]);
                 handler.SaveAs(args[1]);
             }

@@ -179,7 +179,6 @@ The goal of this refactoring is using an existing library for [Static Class Wrap
 * Remove "System.IO" namespace everywhere in `PdfHandler` classes
 * Inject the interface "IFileSystem" and use it for file access
 * Use default implementation `FileSystem` (which is a factory for FileSystem*Wrapper)
-* [GitHub Commit]()
 
 ---
 # Clean Up the code
@@ -191,16 +190,31 @@ This refactring will clean up the missing classes and components and just apply 
 ---
 # Clean Up the code
 
+* [GitHub Commit](https://github.com/CodeQualityCoach/DesignPatternCleanCode/commit/18d1ef97d10e97367c27cd6fcb6e94453fc5a08c)
 * Move all pdf handling and transformation code to `PdfHandler`
 
+---
+# [Factory Pattern]
+
+The goal of this refactoring is separating the creation and the handling of pdf documents.
+
+A factory will be created to create a pdf handler instance with an initial document. After that, the processing is done independent from creation.
 
 ---
-# Testing the Code
+# [Factory Pattern]
+
+* [GitHub Commit]()
+* Create factory class `PdfHandlerFactory`to create and return a handler `PdfHandler`
+* Use interfaces for the factory `IDocumentHandlerFactory` and the handler `IDocumentHandler`
+* Inject factory into commands and use `PdfHandlerFactory` as default
+
+---
+# TODO: Testing the Code
 
 The goal of this refactoring is testing some of the code which was refactored in the last commits. This shows all the advantages of our refactorign and explains gained testability.
 
 ---
-# Testing the Code
+# TODO: Testing the Code
 
 * [GitHub Commit]()
 * Create a test class for each class
@@ -208,7 +222,7 @@ The goal of this refactoring is testing some of the code which was refactored in
 * Inject dependency behaviour to know how the dependency behaves
 
 ---
-# Future Refactorings
+# TODO: Future Refactorings
 
 * Refactor commands to inject dependencies and use a service locator to create the object graph
 * Decorate the downloader with a QR code overlay adder

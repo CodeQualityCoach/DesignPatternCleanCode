@@ -6,6 +6,13 @@ namespace PdfTools.Commands
     [CommandName("create")]
     public class CreateCommand : ICommand
     {
+        private readonly IDocumentHandlerFactory _handlerFactory;
+
+        public CreateCommand(IDocumentHandlerFactory handlerFactory)
+        {
+            _handlerFactory = handlerFactory ?? new PdfHandlerFactory();
+        }
+
         public string Usage { get; } = @"usage: `pdftools create <markdown> <output>`
 
 Converts an input file <markdown> in markdown format into a pdf and stores it as  <output>.";
@@ -37,9 +44,8 @@ Converts an input file <markdown> in markdown format into a pdf and stores it as
             var inFile = args[0];
             var outFile = args[1];
 
-            using (var handler = new PdfHandler())
+            using (var handler =_handlerFactory.CreateFromMarkdown(inFile))
             {
-                handler.CreateFromMarkdown(inFile);
                 handler.SaveAs(outFile);
             }
         }

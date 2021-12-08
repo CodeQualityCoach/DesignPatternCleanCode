@@ -6,6 +6,13 @@ namespace PdfTools.Commands
     [CommandName("addcode")]
     public class AddCodeCommand : ICommand
     {
+        private readonly IDocumentHandlerFactory _handlerFactory;
+
+        public AddCodeCommand(IDocumentHandlerFactory handlerFactory)
+        {
+            _handlerFactory = handlerFactory ?? new PdfHandlerFactory();
+        }
+
         public string Usage { get; } = @"usage: `pdftools addcode <input> <text> [output]`
 
 Adds a QR Code with a <text> to the <input> pdf. If [output] is given, the pdf is stored as [output], otherwise it overrides <input>.";
@@ -34,9 +41,8 @@ Adds a QR Code with a <text> to the <input> pdf. If [output] is given, the pdf i
 
         private void DoExecute(string[] args)
         {
-            using (var handler = new PdfHandler())
+            using (var handler = _handlerFactory.CreateFromFile(args[0]))
             {
-                handler.Open(args[0]);
                 handler.AddOverlayImage(args[1]);
 
                 if (args.Length == 4)

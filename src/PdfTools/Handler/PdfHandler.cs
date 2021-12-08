@@ -2,10 +2,7 @@
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Abstractions;
-using FSharp.Markdown;
-using FSharp.Markdown.Pdf;
 using iTextSharp.text.pdf;
-using PdfTools.Net;
 using PdfTools.Services;
 using Image = iTextSharp.text.Image;
 using iTextSharp.text;
@@ -16,38 +13,20 @@ namespace PdfTools.Handler
     /// The PdfHandler manages a pdf file by opening or downloading it. The handler can process the document type "pdf" and
     /// add images to the file. The handler stores a local copy (instead of a memory stream) to keep it as easy as possible.
     /// </summary>
-    public class PdfHandler : IDisposable
+    public class PdfHandler : IDocumentHandler, IDisposable
     {
-        private readonly IHttpClient _httpClient;
-        private readonly IOverlayImageService _imageGenerator;
         private string _tempFile;
+        private readonly IOverlayImageService _imageGenerator;
         private readonly IFileSystem _fileSystem;
 
-        public PdfHandler(IOverlayImageService imageGenerator = null, IHttpClient httpClient = null, IFileSystem fileSystem = null)
+        public PdfHandler(string filename, IOverlayImageService imageGenerator = null, IFileSystem fileSystem = null)
         {
+            _tempFile = filename ?? throw new ArgumentException(nameof(filename));
+
             // here we use "Zero Impact Injection", which means, the calling class has not changed and functionality
             // has not changed. The code behaves as always, but in testing we will see, that we can inject different behaviour.
-            _httpClient = httpClient ?? new HttpClientWrapper();
             _imageGenerator = imageGenerator ?? new QrCoderService();
             _fileSystem = fileSystem ?? new FileSystem();
-
-            _tempFile =_fileSystem.Path.GetTempFileName();
-        }
-
-        public void Open(string filepath)
-        {
-            _fileSystem.File.Copy(filepath, _tempFile, true);
-        }
-
-        public void Download(string url)
-        {
-            // if you start a 1:1 mapping, you only need to change the initial call.
-            var response = _httpClient.GetAsync(url).Result;
-            var pdf = response.Content.ReadAsByteArrayAsync().Result;
-
-            var tmpTempFile = _fileSystem.Path.GetTempFileName();
-            _fileSystem.File.WriteAllBytes(tmpTempFile, pdf);
-
         }
 
         public void AddOverlayImage(string url)
@@ -112,14 +91,6 @@ namespace PdfTools.Handler
 
             // lets treat the new file as the reference file
             _tempFile = newTempFile;
-        }
-
-        public void CreateFromMarkdown(string markdownFile)
-        {
-            var mdText = File.ReadAllText(markdownFile);
-            var mdDoc = Markdown.Parse(mdText);
-
-            MarkdownPdf.Write(mdDoc, _tempFile);
         }
 
         public void SaveAs(string destFile)
