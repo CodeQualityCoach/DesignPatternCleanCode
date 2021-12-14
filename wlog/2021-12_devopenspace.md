@@ -51,5 +51,3 @@ tags: designpattern, cleancode, cleancodecoach
 * [Dispose Pattern]
 * [Strategy Pattern]
 * [Command Pattern]
-    
-a
