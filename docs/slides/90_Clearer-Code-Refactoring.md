@@ -203,13 +203,45 @@ A factory will be created to create a pdf handler instance with an initial docum
 ---
 # [Factory Pattern]
 
-* [GitHub Commit]()
+* [GitHub Commit](https://github.com/CodeQualityCoach/DesignPatternCleanCode/commit/d91e03b530974ef0ff41986024982b09b381e09a)
 * Create factory class `PdfHandlerFactory`to create and return a handler `PdfHandler`
 * Use interfaces for the factory `IDocumentHandlerFactory` and the handler `IDocumentHandler`
 * Inject factory into commands and use `PdfHandlerFactory` as default
 
 ---
+# Summary
+
+Fact: The complexity of the code and interfaces has increased.
+
+Different concerns have interfaces for testability and have a lot more classes and methods than just the extracted code.
+
+But on the opposite, the code is more flexible (e.g. strategy pattern) and easier to extend (e.g. command pattern).
+
+---
+# Open Tasks
+
+The follwing slides contain upcoming refactorings and code improvements which are not yet done.
+
+---
+# TODO: [Service Locator]
+
+The goal of this refactoring is implementing a service locator to move all `new()` to a dedicated class.
+
+The class will be a proof of concept with dedicated `GetServiceA()` methods and a generic `GetService<T>`.
+
+---
+# TODO: [Service Locator]
+
+* [GitHub Commit]()
+* Create a `ServiceLocator` class to create
+	* Commands
+	* Factory
+	* All Dependencies
+
+---
 # TODO: Testing the Code
+
+TODO: Move this to another presentation? 
 
 The goal of this refactoring is testing some of the code which was refactored in the last commits. This shows all the advantages of our refactorign and explains gained testability.
 

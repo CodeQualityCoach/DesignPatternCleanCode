@@ -31,7 +31,7 @@ namespace PdfTools.Handler
         {
             var tempFile = _fileSystem.Path.GetTempFileName();
 
-            // if you start a 1:1 mapping, you only need to change the initial call.
+            // if you start a 1:1 mapping from the handler to the factory, you only need to change the initial call.
             var response = _httpClient.GetAsync(url).Result;
             var pdf = response.Content.ReadAsByteArrayAsync().Result;
 

@@ -8,7 +8,7 @@ namespace PdfTools.Commands
     {
         private readonly IDocumentHandlerFactory _handlerFactory;
 
-        public ArchiveCommand(IDocumentHandlerFactory handlerFactory)
+        public ArchiveCommand(IDocumentHandlerFactory handlerFactory = null)
         {
             _handlerFactory = handlerFactory ?? new PdfHandlerFactory();
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using PdfTools.Handler;
 
 namespace PdfTools.Commands
 {
@@ -8,6 +9,8 @@ namespace PdfTools.Commands
         public string Usage { get; } = @"usage: `pdftools help`
 
 Shows a list of all commands and their usage.";
+
+        public HelpCommand(IDocumentHandlerFactory factory = null) { }
 
         public bool CanExecute(object context)
         {

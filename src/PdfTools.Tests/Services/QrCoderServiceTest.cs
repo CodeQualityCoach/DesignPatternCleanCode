@@ -26,13 +26,25 @@ namespace PdfTools.Tests.Services
             actual.Height.Should().Be(66);
         }
 
-        [Test(Description = "We check the error path and not we need to define the behaviour on all error path")]
+        [Test(Description = "We check the error path. Therefore we need to define the behaviour on all error path")]
         public void Create_An_Image_For_Text_With_Null_Text()
         {
             var sut = new QrCoderService();
             var actual = sut.CreateOverlayImage((string)null);
 
-            // I define that in an error path for a null string, I just return an empty QR code
+            // I define that in an error path for a null string, I just returns an empty QR code
+            actual.Should().NotBeNull();
+            actual.Width.Should().Be(58); // an empty QR code is much smaller
+            actual.Height.Should().Be(58);
+        }
+
+        [Test(Description = "We check the error path. Therefore we need to define the behaviour on all error path")]
+        public void Create_An_Image_For_Text_With_Empty_Text()
+        {
+            var sut = new QrCoderService();
+            var actual = sut.CreateOverlayImage(string.Empty);
+
+            // I define that in an error path for an empty string, I just returns an empty QR code
             actual.Should().NotBeNull();
             actual.Width.Should().Be(58); // an empty QR code is much smaller
             actual.Height.Should().Be(58);

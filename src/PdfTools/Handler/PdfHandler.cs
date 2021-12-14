@@ -10,8 +10,7 @@ using iTextSharp.text;
 namespace PdfTools.Handler
 {
     /// <summary>
-    /// The PdfHandler manages a pdf file by opening or downloading it. The handler can process the document type "pdf" and
-    /// add images to the file. The handler stores a local copy (instead of a memory stream) to keep it as easy as possible.
+    /// The PdfHandler can process the document type "pdf" and add images to the file. The handler stores a local copy (instead of a memory stream) to keep it as easy as possible.
     /// </summary>
     public class PdfHandler : IDocumentHandler, IDisposable
     {
@@ -35,17 +34,19 @@ namespace PdfTools.Handler
             using (Stream inputImageStream = new MemoryStream())
             using (var outputPdfStream = _fileSystem.FileStream.Create(_tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
             {
+                // create qr code depending if url of simple text
                 var code = Uri.TryCreate(url, UriKind.Absolute, out var uri)
                     ? _imageGenerator.CreateOverlayImage(uri)
                     : _imageGenerator.CreateOverlayImage(url);
-
                 code.Save(inputImageStream, ImageFormat.Jpeg);
                 inputImageStream.Position = 0;
 
+                // open pdf and read file so it can be changed
                 var reader = new PdfReader(inputPdfStream);
                 var stamper = new PdfStamper(reader, outputPdfStream);
                 var pdfContentByte = stamper.GetOverContent(1);
 
+                // add image to pdf
                 var image = Image.GetInstance(inputImageStream);
                 image.SetAbsolutePosition(5, 5);
                 pdfContentByte.AddImage(image);
@@ -59,8 +60,8 @@ namespace PdfTools.Handler
 
             // step 1: creation of a document-object
             var document = new Document();
-            //create newFileStream object which will be disposed at the end
-            using (var newFileStream = new FileStream(newTempFile, FileMode.Create))
+
+            using (var newFileStream =_fileSystem.FileStream.Create(newTempFile, FileMode.Create))
             {
                 // step 2: we create a writer that listens to the document
                 var writer = new PdfCopy(document, newFileStream);
@@ -87,7 +88,7 @@ namespace PdfTools.Handler
                 // step 5: we close the document and writer
                 writer.Close();
                 document.Close();
-            } //disposes the newFileStream object
+            }
 
             // lets treat the new file as the reference file
             _tempFile = newTempFile;

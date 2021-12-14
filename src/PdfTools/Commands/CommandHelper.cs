@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
@@ -14,7 +15,7 @@ namespace PdfTools.Commands
             return Assembly.GetExecutingAssembly()
                 .GetTypes()
                 .Where(x => x.GetInterfaces().Contains(typeof(ICommand)) && !x.IsAbstract)
-                .Select(x => Activator.CreateInstance(x) as ICommand);
+                .Select(x => Activator.CreateInstance(x, BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance | BindingFlags.OptionalParamBinding, null, new[] { Type.Missing }, CultureInfo.CurrentCulture) as ICommand);
         }
 
         // this makes it easier to read if code needs to get the contents of the CommandName attribute.

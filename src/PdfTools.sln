@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{60E907FA-6E1C-47A2-B999-D43468FF4AC4}"
 	ProjectSection(SolutionItems) = preProject
 		..\docs\slides\90_Clearer-Code-Refactoring.md = ..\docs\slides\90_Clearer-Code-Refactoring.md
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfTools.Tests", "PdfTools.Tests\PdfTools.Tests.csproj", "{35D88E58-11CC-44AC-9E9D-A41043A0B0FC}"
