@@ -79,4 +79,4 @@ size: 4K
 * Favour composition over inheritance
 * Legacy Clean Code principle
 * Multi-Inheritance (C++)
-* A class using inheriance to "get functions".
+* Avoid class-inheriance to add functions.
