@@ -69,6 +69,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleOutputForTest.cs" />
+    <Compile Include="ProgramTest.cs" />
     <Compile Include="Services\QrCoderServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

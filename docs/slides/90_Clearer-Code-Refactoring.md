@@ -209,6 +209,22 @@ A factory will be created to create a pdf handler instance with an initial docum
 * Inject factory into commands and use `PdfHandlerFactory` as default
 
 ---
+# Dispose Pattern for testing
+
+This refactoring uses the dispose pattern from .NET to inject or override some parts and restore it after the test is done.
+
+The implementation of "IDisposable" injects an imlementation in `constructor` and resets it during `dispose`
+
+---
+# Dispose Pattern for testing
+
+* [GitHub Commit]()
+* Add class in test project which implements IDisposable (`ConsoleOutputForTest`)
+* Inject custon code to console using `Console.Setout` and cache old value
+* Reset injection in dispose and restore "normal" behaviour
+* Use class through `using (var consoleOutput = new ConsoleOutputForTest())` in `ProgramTest`
+
+---
 # Summary
 
 Fact: The complexity of the code and interfaces has increased.
