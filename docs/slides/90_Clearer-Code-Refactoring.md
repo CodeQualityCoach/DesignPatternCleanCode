@@ -213,7 +213,9 @@ A factory will be created to create a pdf handler instance with an initial docum
 
 This refactoring uses the dispose pattern from .NET to inject or override some parts and restore it after the test is done.
 
-The implementation of "IDisposable" injects an imlementation in `constructor` and resets it during `dispose`
+The implementation of "IDisposable" injects an imlementation in `constructor` and resets it during `dispose`.
+
+If you find code or solutions on the internet (e.g. stackoverflow), put a link to our code so other know, what you did.
 
 ---
 # Dispose Pattern for testing
@@ -223,6 +225,7 @@ The implementation of "IDisposable" injects an imlementation in `constructor` an
 * Inject custon code to console using `Console.Setout` and cache old value
 * Reset injection in dispose and restore "normal" behaviour
 * Use class through `using (var consoleOutput = new ConsoleOutputForTest())` in `ProgramTest`
+* Use a `// cf: ` comment to point to the internet where you find your solution
 
 ---
 # Summary
