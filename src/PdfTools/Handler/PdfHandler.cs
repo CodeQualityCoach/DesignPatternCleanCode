@@ -2,6 +2,7 @@
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Abstractions;
+using System.Linq;
 using iTextSharp.text.pdf;
 using PdfTools.Services;
 using Image = iTextSharp.text.Image;
@@ -61,7 +62,7 @@ namespace PdfTools.Handler
             // step 1: creation of a document-object
             var document = new Document();
 
-            using (var newFileStream =_fileSystem.FileStream.Create(newTempFile, FileMode.Create))
+            using (var newFileStream = _fileSystem.FileStream.Create(newTempFile, FileMode.Create))
             {
                 // step 2: we create a writer that listens to the document
                 var writer = new PdfCopy(document, newFileStream);
@@ -84,6 +85,94 @@ namespace PdfTools.Handler
 
                     reader.Close();
                 }
+
+                // step 5: we close the document and writer
+                writer.Close();
+                document.Close();
+            }
+
+            // lets treat the new file as the reference file
+            _tempFile = newTempFile;
+        }
+
+        public void Shuffle(string[] fileNames)
+        {
+            var newTempFile = _fileSystem.Path.GetTempFileName();
+
+            // step 1: creation of a document-object
+            var document = new Document();
+
+            using (var newFileStream = _fileSystem.FileStream.Create(newTempFile, FileMode.Create))
+            {
+                // step 2: we create a writer that listens to the document
+                var writer = new PdfCopy(document, newFileStream);
+
+                // step 3: we open the document
+                document.Open();
+
+                var allReaders = fileNames.Select(filename =>
+                {
+                    // we create a reader for a certain document
+                    var reader = new PdfReader(filename);
+                    reader.ConsolidateNamedDestinations();
+                    return reader;
+                }).ToArray();
+                var maxPages = allReaders.Max(x => x.NumberOfPages);
+
+                for (int i = 1; i <= maxPages; i++)
+                {
+                    foreach (var reader in allReaders)
+                    {
+                        if (reader.NumberOfPages < i)
+                        {
+                            document.NewPage();
+                        }
+                        else
+                        {
+                            var page = writer.GetImportedPage(reader, i);
+                            writer.AddPage(page);
+                        }
+                    }
+                }
+
+                allReaders.ToList().ForEach(x => x.Close());
+
+                // step 5: we close the document and writer
+                writer.Close();
+                document.Close();
+            }
+
+            // lets treat the new file as the reference file
+            _tempFile = newTempFile;
+        }
+
+        public void Reverse()
+        {
+            var newTempFile = _fileSystem.Path.GetTempFileName();
+
+            // step 1: creation of a document-object
+            var document = new Document();
+
+            using (var newFileStream = _fileSystem.FileStream.Create(newTempFile, FileMode.Create))
+            {
+                // step 2: we create a writer that listens to the document
+                var writer = new PdfCopy(document, newFileStream);
+
+                // step 3: we open the document
+                document.Open();
+
+                // we create a reader for a certain document
+                var reader = new PdfReader(_tempFile);
+                reader.ConsolidateNamedDestinations();
+
+                // step 4: we add content
+                for (var i = reader.NumberOfPages; i >= 1; i--)
+                {
+                    var page = writer.GetImportedPage(reader, i);
+                    writer.AddPage(page);
+                }
+
+                reader.Close();
 
                 // step 5: we close the document and writer
                 writer.Close();

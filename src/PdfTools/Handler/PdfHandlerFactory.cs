@@ -2,6 +2,8 @@
 using System.IO.Abstractions;
 using FSharp.Markdown;
 using FSharp.Markdown.Pdf;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using PdfTools.Net;
 
 namespace PdfTools.Handler
@@ -47,6 +49,12 @@ namespace PdfTools.Handler
             var mdDoc = Markdown.Parse(mdText);
 
             MarkdownPdf.Write(mdDoc, tempFile);
+            return new PdfHandler(tempFile);
+        }
+
+        public IDocumentHandler CreateEmpty()
+        {
+            var tempFile = _fileSystem.Path.GetTempFileName();
             return new PdfHandler(tempFile);
         }
     }

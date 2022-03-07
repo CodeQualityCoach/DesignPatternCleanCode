@@ -7,5 +7,7 @@ namespace PdfTools.Handler
         void AddOverlayImage(string url);
         void Append(string[] fileNames);
         void SaveAs(string destFile);
+        void Shuffle(string[] fileNames);
+        void Reverse();
     }
 }
