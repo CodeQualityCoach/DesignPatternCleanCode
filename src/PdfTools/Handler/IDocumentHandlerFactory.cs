@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PdfTools.Handler
+﻿namespace PdfTools.Handler
 {
     public interface IDocumentHandlerFactory
     {

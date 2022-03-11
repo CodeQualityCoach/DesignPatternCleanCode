@@ -2,8 +2,6 @@
 using System.IO.Abstractions;
 using FSharp.Markdown;
 using FSharp.Markdown.Pdf;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 using PdfTools.Net;
 
 namespace PdfTools.Handler

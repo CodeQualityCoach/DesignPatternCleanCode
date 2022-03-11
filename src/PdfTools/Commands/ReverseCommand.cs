@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO.Abstractions;
-using System.Linq;
 using PdfTools.Handler;
 
 namespace PdfTools.Commands
